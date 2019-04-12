@@ -5,13 +5,10 @@ var mysql = require("mysql");
 var connection = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: "root",
 
-  // Your password
   password: "reborn13",
   database: "bamazon"
 });
@@ -59,7 +56,7 @@ function customerMain(){
             .then(function(inqRes) {
                 if(inqRes.item_id && inqRes.quantity){
                     connection.query(
-                        "SELECT price,stock_quantity from products where ?",
+                        "SELECT price,stock_quantity,product_sales from products where ?",
                         [
                             {
                             item_id: inqRes.item_id
@@ -67,7 +64,6 @@ function customerMain(){
                         ],
                         function(err, res) {
                             if (err) throw err;
-                            // Log all results of the SELECT statement
                             if (res[0].stock_quantity < inqRes.quantity){
                                 console.log("Insufficient quantity!")
                                 customerMain();
@@ -77,7 +73,8 @@ function customerMain(){
                                     "UPDATE products SET ? WHERE ?",
                                     [
                                     {
-                                        stock_quantity: res[0].stock_quantity - inqRes.quantity
+                                        stock_quantity: res[0].stock_quantity - inqRes.quantity,
+                                        product_sales: res[0].product_sales + res[0].price * inqRes.quantity
                                     },
                                     {
                                         item_id: inqRes.item_id
