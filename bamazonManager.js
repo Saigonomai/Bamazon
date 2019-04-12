@@ -122,7 +122,7 @@ function addInv(){
                         "UPDATE products SET ? WHERE ?",
                         [
                         {
-                            stock_quantity: (res[0].stock_quantity + inqRes.quantity)
+                            stock_quantity: parseInt(res[0].stock_quantity) + parseInt(inqRes.quantity)
                         },
                         {
                             item_id: res[0].item_id
